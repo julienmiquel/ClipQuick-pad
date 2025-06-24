@@ -1,34 +1,28 @@
 "use client";
 
-import { useState, useEffect, useRef, useTransition } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useTransition } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Check } from "lucide-react";
 import { checkTextForAutoCopy } from "@/app/actions";
 
 interface ClipboardCardProps {
   padNumber: number;
+  text: string;
+  onTextChange: (newText: string) => void;
 }
 
-export function ClipboardCard({ padNumber }: ClipboardCardProps) {
-  const [text, setText] = useState("");
-  const [isCopied, setIsCopied] = useState(false);
+export function ClipboardCard({ padNumber, text, onTextChange }: ClipboardCardProps) {
   const [isAiChecking, startTransition] = useTransition();
   const { toast } = useToast();
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleCopyToClipboard = (isAuto: boolean = false) => {
-    if (!text || (isCopied && !isAuto)) return;
+  const handleAutoCopyToClipboard = () => {
+    if (!text) return;
 
     navigator.clipboard.writeText(text).then(() => {
-      if (!isAuto) {
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-      }
       toast({
-        title: isAuto ? "🤖 AI Assistant" : "✅ Success",
+        title: "🤖 AI Assistant",
         description: "Text has been copied to your clipboard.",
       });
     }).catch(err => {
@@ -48,7 +42,7 @@ export function ClipboardCard({ padNumber }: ClipboardCardProps) {
         startTransition(async () => {
           const shouldCopy = await checkTextForAutoCopy(text);
           if (shouldCopy) {
-            handleCopyToClipboard(true);
+            handleAutoCopyToClipboard();
           }
         });
       }, 1500);
@@ -61,7 +55,7 @@ export function ClipboardCard({ padNumber }: ClipboardCardProps) {
 
   return (
     <Card className="w-full shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader>
         <div>
           <CardTitle className="text-xl font-headline tracking-tight">
             ClipQuick Pad #{padNumber}
@@ -70,27 +64,11 @@ export function ClipboardCard({ padNumber }: ClipboardCardProps) {
             Your text, ready to paste.
           </CardDescription>
         </div>
-        <Button
-          onClick={() => handleCopyToClipboard(false)}
-          disabled={!text || isCopied}
-          className="transition-all duration-300"
-          size="lg"
-        >
-          {isCopied ? (
-            <>
-              <Check className="mr-2 h-5 w-5" /> Copied!
-            </>
-          ) : (
-            <>
-              <Copy className="mr-2 h-5 w-5" /> Manual Copy #{padNumber}
-            </>
-          )}
-        </Button>
       </CardHeader>
       <CardContent>
         <Textarea
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => onTextChange(e.target.value)}
           placeholder="Paste or type here..."
           className="min-h-[120px] resize-y text-base ring-offset-background focus-visible:ring-2 focus-visible:ring-accent"
           aria-label="Text to copy"
