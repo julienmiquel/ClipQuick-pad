@@ -11,7 +11,6 @@ import {
 import { ClipboardCard } from "@/components/clipboard-card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   const [texts, setTexts] = useState<string[]>(Array(6).fill(""));
@@ -149,34 +148,36 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center items-center gap-4 mb-8 w-full max-w-5xl mx-auto">
-            <Button onClick={handleSaveProject}>
-              <FileDown className="mr-2 h-5 w-5" /> Save Project
-            </Button>
-            <Button onClick={triggerFileUpload} variant="outline">
-              <FileUp className="mr-2 h-5 w-5" /> Load Project
-            </Button>
-            
-            <Separator orientation="vertical" className="h-10 mx-2 hidden md:block" />
-            
-            {[...Array(6)].map((_, i) => (
-              <Button
-                key={i}
-                onClick={() => handleManualCopy(i)}
-                disabled={!texts[i] || copiedIndex === i}
-                className="transition-all duration-300"
-              >
-                {copiedIndex === i ? (
-                  <>
-                    <Check className="mr-2 h-5 w-5" /> Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="mr-2 h-5 w-5" /> Manual Copy #{i + 1}
-                  </>
-                )}
+          <div className="flex flex-wrap justify-center items-start gap-6 mb-8 w-full max-w-5xl mx-auto">
+            <div className="flex flex-col gap-4">
+              <Button onClick={handleSaveProject}>
+                <FileDown className="mr-2 h-5 w-5" /> Save Project
               </Button>
-            ))}
+              <Button onClick={triggerFileUpload} variant="outline">
+                <FileUp className="mr-2 h-5 w-5" /> Load Project
+              </Button>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              {[...Array(6)].map((_, i) => (
+                <Button
+                  key={i}
+                  onClick={() => handleManualCopy(i)}
+                  disabled={!texts[i] || copiedIndex === i}
+                  className="transition-all duration-300"
+                >
+                  {copiedIndex === i ? (
+                    <>
+                      <Check className="mr-2 h-5 w-5" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="mr-2 h-5 w-5" /> Prompt {i + 1}
+                    </>
+                  )}
+                </Button>
+              ))}
+            </div>
           </div>
 
           <div className="flex w-full max-w-lg mx-auto flex-col gap-6">
