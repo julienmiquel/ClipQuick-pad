@@ -8,7 +8,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Copy, Check } from "lucide-react";
 import { checkTextForAutoCopy } from "@/app/actions";
 
-export function ClipboardCard() {
+interface ClipboardCardProps {
+  padNumber: number;
+}
+
+export function ClipboardCard({ padNumber }: ClipboardCardProps) {
   const [text, setText] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const [isAiChecking, startTransition] = useTransition();
@@ -58,8 +62,8 @@ export function ClipboardCard() {
   return (
     <Card className="w-full shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-headline tracking-tight">
-          ClipQuick Pad
+        <CardTitle className="text-xl font-headline tracking-tight">
+          ClipQuick Pad #{padNumber}
         </CardTitle>
         <CardDescription className="pt-1 text-sm">
           Your text, ready to paste.
@@ -70,7 +74,7 @@ export function ClipboardCard() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Paste or type here..."
-          className="min-h-[200px] resize-y text-base ring-offset-background focus-visible:ring-2 focus-visible:ring-accent"
+          className="min-h-[120px] resize-y text-base ring-offset-background focus-visible:ring-2 focus-visible:ring-accent"
           aria-label="Text to copy"
         />
       </CardContent>

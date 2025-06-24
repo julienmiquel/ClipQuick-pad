@@ -38,13 +38,10 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <ClipboardCard />
-          <ClipboardCard />
-          <ClipboardCard />
-          <ClipboardCard />
-          <ClipboardCard />
-          <ClipboardCard />
+        <div className="flex w-full max-w-lg mx-auto flex-col gap-6">
+          {[...Array(6)].map((_, i) => (
+            <ClipboardCard key={i} padNumber={i + 1} />
+          ))}
         </div>
       </div>
 
