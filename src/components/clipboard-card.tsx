@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Check } from "lucide-react";
 import { checkTextForAutoCopy } from "@/app/actions";
@@ -61,13 +61,31 @@ export function ClipboardCard({ padNumber }: ClipboardCardProps) {
 
   return (
     <Card className="w-full shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-      <CardHeader className="text-center">
-        <CardTitle className="text-xl font-headline tracking-tight">
-          ClipQuick Pad #{padNumber}
-        </CardTitle>
-        <CardDescription className="pt-1 text-sm">
-          Your text, ready to paste.
-        </CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle className="text-xl font-headline tracking-tight">
+            ClipQuick Pad #{padNumber}
+          </CardTitle>
+          <CardDescription className="pt-1 text-sm">
+            Your text, ready to paste.
+          </CardDescription>
+        </div>
+        <Button
+          onClick={() => handleCopyToClipboard(false)}
+          disabled={!text || isCopied}
+          className="transition-all duration-300"
+          size="lg"
+        >
+          {isCopied ? (
+            <>
+              <Check className="mr-2 h-5 w-5" /> Copied!
+            </>
+          ) : (
+            <>
+              <Copy className="mr-2 h-5 w-5" /> Manual Copy #{padNumber}
+            </>
+          )}
+        </Button>
       </CardHeader>
       <CardContent>
         <Textarea
@@ -78,24 +96,6 @@ export function ClipboardCard({ padNumber }: ClipboardCardProps) {
           aria-label="Text to copy"
         />
       </CardContent>
-      <CardFooter>
-        <Button
-          onClick={() => handleCopyToClipboard(false)}
-          disabled={!text || isCopied}
-          className="w-full transition-all duration-300"
-          size="lg"
-        >
-          {isCopied ? (
-            <>
-              <Check className="mr-2 h-5 w-5" /> Copied!
-            </>
-          ) : (
-            <>
-              <Copy className="mr-2 h-5 w-5" /> Manual Copy
-            </>
-          )}
-        </Button>
-      </CardFooter>
     </Card>
   );
 }
