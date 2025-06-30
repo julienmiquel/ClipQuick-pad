@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Bot, Copy, Check, FileDown, FileUp } from "lucide-react";
+import { Bot, Copy, Check, FileDown, FileUp, Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
-  const [texts, setTexts] = useState<string[]>(Array(6).fill(""));
+  const [texts, setTexts] = useState<string[]>(["", "", ""]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -22,6 +22,10 @@ export default function Home() {
     const newTexts = [...texts];
     newTexts[index] = newText;
     setTexts(newTexts);
+  };
+
+  const handleAddPrompt = () => {
+    setTexts(prev => [...prev, ""]);
   };
 
   const handleManualCopy = (index: number) => {
@@ -80,8 +84,8 @@ export default function Home() {
         }
         const data = JSON.parse(content);
 
-        if (!data.clipquickPads || !Array.isArray(data.clipquickPads) || data.clipquickPads.length !== 6 || !data.clipquickPads.every((item: any) => typeof item === 'string')) {
-          throw new Error("Invalid or corrupted project file.");
+        if (!data.clipquickPads || !Array.isArray(data.clipquickPads) || !data.clipquickPads.every((item: any) => typeof item === 'string')) {
+          throw new Error("Invalid or corrupted project file. Expected 'clipquickPads' to be an array of strings.");
         }
         
         setTexts(data.clipquickPads);
@@ -159,7 +163,7 @@ export default function Home() {
             </div>
             
             <div className="flex flex-col gap-2">
-              {[...Array(6)].map((_, i) => (
+              {texts.map((_, i) => (
                 <Button
                   key={i}
                   onClick={() => handleManualCopy(i)}
@@ -181,14 +185,19 @@ export default function Home() {
           </div>
 
           <div className="flex w-full max-w-lg mx-auto flex-col gap-6">
-            {[...Array(6)].map((_, i) => (
+            {texts.map((text, i) => (
               <ClipboardCard
                 key={i}
                 padNumber={i + 1}
-                text={texts[i]}
+                text={text}
                 onTextChange={(newText) => handleTextChange(i, newText)}
               />
             ))}
+             <div className="flex justify-center pt-2">
+                <Button onClick={handleAddPrompt} variant="outline" className="w-full">
+                    <Plus className="mr-2 h-5 w-5" /> Add Prompt
+                </Button>
+            </div>
           </div>
         </div>
 
