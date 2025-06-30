@@ -162,13 +162,13 @@ export default function Home() {
               </Button>
             </div>
             
-            <div className="flex flex-col gap-2">
-              {texts.map((_, i) => (
+            <div className="flex flex-col gap-2 w-48">
+              {texts.map((text, i) => (
                 <Button
                   key={i}
                   onClick={() => handleManualCopy(i)}
-                  disabled={!texts[i] || copiedIndex === i}
-                  className="transition-all duration-300"
+                  disabled={!text || copiedIndex === i}
+                  className="transition-all duration-300 w-full justify-start"
                 >
                   {copiedIndex === i ? (
                     <>
@@ -176,7 +176,10 @@ export default function Home() {
                     </>
                   ) : (
                     <>
-                      <Copy className="mr-2 h-5 w-5" /> Prompt {i + 1}
+                      <Copy className="mr-2 h-5 w-5" />
+                      <span className="truncate">
+                        {text ? text : `Prompt ${i + 1}`}
+                      </span>
                     </>
                   )}
                 </Button>
