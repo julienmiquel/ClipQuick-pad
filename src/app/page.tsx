@@ -125,89 +125,75 @@ export default function Home() {
         className="hidden"
         onChange={handleLoadProject}
       />
-      <main className="flex min-h-screen w-full flex-col items-center bg-background p-4 sm:p-6 md:p-8">
-        <div className="absolute top-4 right-4">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <div className="flex items-center gap-2 rounded-full border bg-card/50 px-3 py-1.5 text-sm text-muted-foreground backdrop-blur-sm">
-                  <Bot className="h-5 w-5 text-accent" />
-                  <span>AI Assistant Active</span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>We'll automatically copy text for you!</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-
-        <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col items-center">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-headline tracking-tight lg:text-5xl">
-              ClipQuick Dashboard
+      <div className="flex min-h-screen w-full flex-col">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background/95 px-4 backdrop-blur-sm md:px-6">
+            <h1 className="text-xl font-bold tracking-tight">
+                ClipQuick
             </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Your smart clipboards, ready for action. Just type and we'll handle the copying for you.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center items-start gap-6 mb-8 w-full max-w-5xl mx-auto">
-            <div className="flex flex-col gap-4">
-              <Button onClick={handleSaveProject}>
-                <FileDown className="mr-2 h-5 w-5" /> Save Project
-              </Button>
-              <Button onClick={triggerFileUpload} variant="outline">
-                <FileUp className="mr-2 h-5 w-5" /> Load Project
-              </Button>
+            <div className="flex items-center space-x-4">
+                <TooltipProvider>
+                    <Tooltip>
+                    <TooltipTrigger>
+                        <div className="flex items-center gap-2 rounded-full border bg-card/50 px-3 py-1.5 text-sm text-muted-foreground">
+                        <Bot className="h-5 w-5 text-accent" />
+                        <span className="hidden sm:inline">AI Active</span>
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>We'll automatically copy sensitive text for you!</p>
+                    </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                <Button onClick={handleSaveProject} variant="outline">
+                    <FileDown className="mr-0 h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Save</span>
+                </Button>
+                <Button onClick={triggerFileUpload} variant="outline">
+                    <FileUp className="mr-0 h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Load</span>
+                </Button>
             </div>
-            
-            <div className="flex flex-col gap-2 w-48">
-              {texts.map((text, i) => (
-                <Button
-                  key={i}
-                  onClick={() => handleManualCopy(i)}
-                  disabled={!text || copiedIndex === i}
-                  className="transition-all duration-300 w-full justify-start"
-                >
-                  {copiedIndex === i ? (
-                    <>
-                      <Check className="mr-2 h-5 w-5" /> Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="mr-2 h-5 w-5" />
-                      <span className="truncate">
+        </header>
+        <main className="container mx-auto grid flex-1 grid-cols-1 gap-8 px-4 py-8 md:grid-cols-[280px_1fr]">
+            {/* Left Column: Prompts List */}
+            <aside className="hidden md:flex flex-col gap-4 sticky top-20 h-fit">
+                <h2 className="text-lg font-semibold tracking-tight">Quick Copy Prompts</h2>
+                <div className="flex flex-col gap-2">
+                    {texts.map((text, i) => (
+                    <Button
+                        key={i}
+                        onClick={() => handleManualCopy(i)}
+                        disabled={!text || copiedIndex === i}
+                        variant={copiedIndex === i ? 'secondary' : 'ghost'}
+                        className="transition-all duration-300 w-full justify-start text-left"
+                    >
+                        {copiedIndex === i ? (
+                          <Check className="mr-2 h-5 w-5 text-primary" />
+                        ) : (
+                          <Copy className="mr-2 h-5 w-5" />
+                        )}
+                        <span className="truncate">
                         {text ? text : `Prompt ${i + 1}`}
-                      </span>
-                    </>
-                  )}
-                </Button>
-              ))}
-            </div>
-          </div>
+                        </span>
+                    </Button>
+                    ))}
+                </div>
+            </aside>
 
-          <div className="flex w-full max-w-lg mx-auto flex-col gap-6">
-            {texts.map((text, i) => (
-              <ClipboardCard
-                key={i}
-                padNumber={i + 1}
-                text={text}
-                onTextChange={(newText) => handleTextChange(i, newText)}
-              />
-            ))}
-             <div className="flex justify-center pt-2">
-                <Button onClick={handleAddPrompt} variant="outline" className="w-full">
-                    <Plus className="mr-2 h-5 w-5" /> Add Prompt
+            {/* Right Column: Clipboard Cards */}
+            <div className="flex flex-col gap-6">
+                 {texts.map((text, i) => (
+                    <ClipboardCard
+                        key={i}
+                        padNumber={i + 1}
+                        text={text}
+                        onTextChange={(newText) => handleTextChange(i, newText)}
+                    />
+                    ))}
+                <Button onClick={handleAddPrompt} variant="outline" className="w-full mt-2">
+                    <Plus className="mr-2 h-5 w-5" /> Add New Pad
                 </Button>
             </div>
-          </div>
-        </div>
-
-        <footer className="mt-12 text-center text-sm text-muted-foreground">
-          <p>A smart clipboard built with Next.js and Genkit.</p>
-        </footer>
-      </main>
+        </main>
+      </div>
     </>
   );
 }
