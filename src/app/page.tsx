@@ -11,6 +11,7 @@ import {
 import { ClipboardCard } from "@/components/clipboard-card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { QuickPrompts } from "@/components/quick-prompts";
 
 export default function Home() {
   const [texts, setTexts] = useState<string[]>(["", "", ""]);
@@ -155,31 +156,22 @@ export default function Home() {
         <main className="container mx-auto grid flex-1 grid-cols-1 gap-8 px-4 py-8 md:grid-cols-[280px_1fr]">
             {/* Left Column: Prompts List */}
             <aside className="hidden md:flex flex-col gap-4 sticky top-20 h-fit">
-                <h2 className="text-lg font-semibold tracking-tight">Quick Copy Prompts</h2>
-                <div className="flex flex-col gap-2">
-                    {texts.map((text, i) => (
-                    <Button
-                        key={i}
-                        onClick={() => handleManualCopy(i)}
-                        disabled={!text || copiedIndex === i}
-                        variant={copiedIndex === i ? 'secondary' : 'ghost'}
-                        className="transition-all duration-300 w-full justify-start text-left"
-                    >
-                        {copiedIndex === i ? (
-                          <Check className="mr-2 h-5 w-5 text-primary" />
-                        ) : (
-                          <Copy className="mr-2 h-5 w-5" />
-                        )}
-                        <span className="truncate">
-                        {text ? text : `Prompt ${i + 1}`}
-                        </span>
-                    </Button>
-                    ))}
-                </div>
+                <QuickPrompts 
+                    texts={texts}
+                    copiedIndex={copiedIndex}
+                    onManualCopy={handleManualCopy}
+                />
             </aside>
 
             {/* Right Column: Clipboard Cards */}
             <div className="flex flex-col gap-6">
+                 <aside className="flex flex-col gap-4 md:hidden">
+                    <QuickPrompts 
+                        texts={texts}
+                        copiedIndex={copiedIndex}
+                        onManualCopy={handleManualCopy}
+                    />
+                 </aside>
                  {texts.map((text, i) => (
                     <ClipboardCard
                         key={i}
